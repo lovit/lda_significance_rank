@@ -32,3 +32,14 @@ def uniform_topic_over_docs(doc_topic_prob):
         td = td.reshape(-1)
         kl[t] = scipy.stats.entropy(td, uniform)
     return kl
+
+def uniform_word_over_topics(topic_term_prob, term_prob):
+    n_topics, n_terms = topic_term_prob.shape
+    term_topic_prob = topic_term_prob.T
+    uniform = np.ones(n_topics) / n_topics
+    kl = np.zeros(n_terms)
+    for t in range(n_terms):
+        tt = term_topic_prob[t]
+        tt = tt / tt.sum()
+        kl[t] = scipy.stats.entropy(tt, uniform)
+    return kl
