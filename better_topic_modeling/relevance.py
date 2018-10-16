@@ -21,3 +21,14 @@ def ww_uniform(topic_term_prob, topic_prob):
     for t in range(n_topics):
         kl_ww[t] = scipy.stats.entropy(topic_term_prob[t], u_prob)
     return kl_ww
+
+def t_uniform(doc_topic_prob):
+    n_docs, n_topics = doc_topic_prob.shape
+    uniform = np.ones(n_docs) / n_docs
+    kl_t = np.zeros(n_topics)
+    for t in range(n_topics):
+        td = doc_topic_prob[:,t]
+        td = td / td.sum()
+        td = td.reshape(-1)
+        kl_t[t] = scipy.stats.entropy(td, uniform)
+    return kl_t
