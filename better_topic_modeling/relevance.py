@@ -22,7 +22,7 @@ def topic_weighted_uniform_over_words(topic_term_prob, topic_prob):
         kl[t] = scipy.stats.entropy(topic_term_prob[t], uniform)
     return kl
 
-def uniform_over_topics(doc_topic_prob):
+def uniform_over_docs(doc_topic_prob):
     n_docs, n_topics = doc_topic_prob.shape
     uniform = np.ones(n_docs) / n_docs
     kl = np.zeros(n_topics)
