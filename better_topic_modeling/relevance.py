@@ -13,3 +13,11 @@ def w_uniform(topic_term_prob):
     for t in range(n_topics):
         kl_w[t] = scipy.stats.entropy(topic_term_prob[t], u_prob)
     return kl_w
+
+def ww_uniform(topic_term_prob, topic_prob):
+    n_topics, n_terms = topic_term_prob.shape
+    u_prob = np.dot(topic_prob, topic_term_prob)
+    kl_ww = np.zeros(n_topics)
+    for t in range(n_topics):
+        kl_ww[t] = scipy.stats.entropy(topic_term_prob[t], u_prob)
+    return kl_ww
