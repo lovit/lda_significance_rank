@@ -7,23 +7,26 @@ from six.moves import xrange
 
 def get_parameters(lda, corpus):
     topic_term_prob = _get_topic_term_prob(lda)
-    doc_topic_prob = _get_doc_topic_prob(lda, corpus)
-    return topic_term_prob, doc_topic_prob
+    doc_topic_freq = _get_doc_topic_freq(lda, corpus)
+
+    doc_topic_prob = doc_topic_freq / doc_topic_freq.sum(axis=1)[:, None]
+    topic_prob = doc_topic_freq.sum(axis=0) / doc_topic_freq.sum()
+
+    return topic_term_prob, doc_topic_prob, topic_prob
 
 def _get_topic_term_prob(lda):
     topic_term_freq = lda.state.get_lambda()
     topic_term_prob = topic_term_freq / topic_term_freq.sum(axis=1)[:, None]
     return topic_term_prob
 
-def _get_doc_topic_prob(lda, corpus, verbose=True):
+def _get_doc_topic_freq(lda, corpus, verbose=True):
     try:
-        doc_topic_prob, _ = lda.inference(corpus)
+        doc_topic_freq, _ = lda.inference(corpus)
     except:
         doc_topic_freq = inference_doc_topic_freq(lda, corpus, verbose)
-        doc_topic_prob = doc_topic_freq / doc_topic_freq.sum(axis=1)[:, None]
-    return doc_topic_prob
+    return doc_topic_freq
 
-def inference_doc_topic_freq(lda, chunk, verbose=True, debug=False):
+def inference_doc_topic_freq(lda, chunk, verbose=True, debug=True):
     """Given a chunk of sparse document vectors, estimate gamma (parameters controlling the topic weights)
     for each document in the chunk.
 
